@@ -75,3 +75,22 @@ from django.views.generic.base import TemplateView
 
 class RegisterDoneView(TemplateView):
     template_name = 'main/register_done.html'
+
+
+from django.core.signing import BadSignature
+
+from .utilities import signer
+
+
+def user_activate(request, sign):
+    try:
+        username = signer.unsign(sign)
+    except BadSignature:
+        return render(request, 'main/bad_signature.html')
+    user = get_object_or_404(AdUser, username=username)
+    if user.is_activated:
+        template = 'main/activation_done.html'
+        user.is_active = True
+        user.is_activated = True
+        user.save()
+    return render(request, template)
