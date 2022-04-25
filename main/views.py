@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView
 from .models import AdUser
 from .forms import ChangeUserInfoForm
 
@@ -58,3 +58,20 @@ class BPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChang
     template_name = 'main/password_change.html'
     success_url = reverse_lazy('main:profile')
     success_message = 'Пароль пользователя изменен'
+
+
+from .forms import RegisterUserForm
+
+
+class RegisterUserView(CreateView):
+    model = AdUser
+    template_name = 'main/register_user.html'
+    form_class = RegisterUserForm
+    success_url = reverse_lazy('main:register_done')
+
+
+from django.views.generic.base import TemplateView
+
+
+class RegisterDoneView(TemplateView):
+    template_name = 'main/register_done.html'
